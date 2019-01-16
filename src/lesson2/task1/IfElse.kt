@@ -2,8 +2,8 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
-import kotlin.math.max
-import kotlin.math.sqrt
+import java.lang.Math.pow
+import kotlin.math.*
 
 /**
  * Пример
@@ -62,7 +62,15 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String = TODO()
+fun ageDescription(age: Int): String =
+        when {
+            age in 11..14 -> "$age лет"
+            age in 111..115 -> "$age лет"
+            age in 211..215 -> "$age лет"
+            age % 10 == 1 -> "$age год"
+            age % 10 in 2..4 -> "$age года"
+            else -> "$age лет"
+        }
 
 /**
  * Простая
@@ -73,7 +81,18 @@ fun ageDescription(age: Int): String = TODO()
  */
 fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
-                   t3: Double, v3: Double): Double = TODO()
+                   t3: Double, v3: Double): Double {
+    val s1 = t1 * v1
+    val s2 = t2 * v2
+    val s3 = t3 * v3
+    val halfWay = (s1 + s2 + s3) / 2
+    return when {
+        halfWay > (s1 + s2) -> ((halfWay - s1 - s2) / v3 + t1 + t2)
+        halfWay > s1 -> ((halfWay - s1) / v2 + t1)
+        halfWay < s1 -> halfWay / v1
+        else -> Double.NaN
+    }
+}
 
 /**
  * Простая
@@ -86,7 +105,14 @@ fun timeForHalfWay(t1: Double, v1: Double,
  */
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
-                       rookX2: Int, rookY2: Int): Int = TODO()
+                       rookX2: Int, rookY2: Int): Int = when {
+    ((kingX == rookX1) or (kingY == rookY1)) and ((kingX == rookX2) or (kingY == rookY2)) -> 3
+    kingX == rookX2 -> 2
+    kingY == rookY2 -> 2
+    kingX == rookX1 -> 1
+    kingY == rookY1 -> 1
+    else -> 0
+}
 
 /**
  * Простая
@@ -100,7 +126,12 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int = TODO()
+                          bishopX: Int, bishopY: Int): Int = when {
+    ((kingX == rookX) or (kingY == rookY)) and (abs(kingX - bishopX) == abs(kingY - bishopY)) -> 3
+    abs(kingX - bishopX) == abs(kingY - bishopY) -> 2
+    (kingX == rookX) or (kingY == rookY) -> 1
+    else -> 0
+}
 
 /**
  * Простая
@@ -110,7 +141,20 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int  {
+    val cosAlpha = (pow(a, 2.0) + pow(c, 2.0) - pow(b, 2.0)) / (2 * a * c)
+    val cosBetta = (pow(a, 2.0) + pow(b, 2.0) - pow(c, 2.0)) / (2 * a * b)
+    val cosGamma = (pow(b, 2.0) + pow(c, 2.0) - pow(a, 2.0)) / (2 * b * c)
+    val alpha = if(cosAlpha == 0.0) 90.0 else acos(cosAlpha) / PI * 180
+    val betta = if(cosBetta == 0.0) 90.0 else acos(cosBetta) / PI * 180
+    val gamma = if(cosGamma == 0.0) 90.0 else acos(cosGamma) / PI * 180
+    return when {
+        (alpha > 90.0 && alpha < 180.0) or (betta > 90.0 && betta < 180.0) or (gamma > 90.0 && gamma < 180.0) -> 2
+        (alpha == 90.0) || (betta == 90.0) || (gamma == 90.0) -> 1
+        (alpha > 0.0 && alpha < 90.0) or (betta > 0.0 && betta < 90.0) or (gamma > 0.0 && gamma < 90.0) -> 0
+        else -> -1
+    }
+}
 
 /**
  * Средняя
@@ -120,4 +164,14 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+    return when {
+        (d in a..b) && (c in a..b) -> d - c
+        (b in c..d) && (a in c..d) -> b - a
+        d in a..b -> d - a
+        b in c..d -> b - c
+        c in a..b -> b - c
+        a in c..d -> d - a
+        else -> -1
+    }
+}
